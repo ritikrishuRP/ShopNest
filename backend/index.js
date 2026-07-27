@@ -4,6 +4,11 @@ import connectDB from "./config/db.js";
 import cors from "cors";
 
 import authRoutes from "./routes/authRoutes.js"
+import productRoutes from "./routes/productRoutes.js"
+import orderRoutes from "./routes/orderRoutes.js"
+import paymentRoutes from "./routes/paymentRoutes.js"
+import adminRoutes from "./routes/adminRoutes.js"
+import analyticsRoutes from "./routes/analyticsRoutes.js"
 
 dotenv.config();
 connectDB();
@@ -14,12 +19,18 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({extended:true}));
 
 app.get("/", (req, res) => {
     res.send("ShopNest Backend is working properly")
 })
 
 app.use("/api/auth", authRoutes);
+app.use("/api/products", productRoutes);
+app.use("/api/orders", orderRoutes);
+app.use("/api/payments", paymentRoutes);
+app.use("/api/analytics", analyticsRoutes);
+
 
 const PORT = process.env.PORT || 5000;
 
