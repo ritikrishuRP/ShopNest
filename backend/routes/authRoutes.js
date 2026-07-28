@@ -10,6 +10,7 @@ router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.post("/logout", logoutUser);
 router.get("/users", protect, admin, getUsers);
+//router.post("/verify-email", async)
 
 export default router;
 
