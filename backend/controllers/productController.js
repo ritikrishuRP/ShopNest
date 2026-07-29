@@ -27,15 +27,8 @@ export const createProduct = async (req, res) => {
   try {
     const { name, description, price, category, stock } = req.body;
     let imageUrl = '';
-    console.log(req.file);
     if (req.file) {
-    console.log("Uploading file:", req.file.path);
-
     const result = await cloudinary.uploader.upload(req.file.path);
-
-    console.log("Cloudinary Upload Success:");
-    console.log(result);
-
     imageUrl = result.secure_url;
 }
     const product = new Product({
@@ -44,12 +37,6 @@ export const createProduct = async (req, res) => {
     const createdProduct = await product.save();
     res.status(201).json(createdProduct);
   } catch (error) {
-    console.log("========== CREATE PRODUCT ERROR ==========");
-
-    console.log("Message:", error.message);
-    console.log("Name:", error.name);
-    console.log("HTTP Code:", error.http_code);
-
     console.dir(error, { depth: null });
 
     res.status(500).json({
