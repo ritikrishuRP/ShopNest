@@ -93,7 +93,7 @@ const ProductDetail = () => {
           <img
             src={product.imageUrl}
             alt={product.name}
-            className="h-[500px] w-full object-cover transition duration-500 hover:scale-105"
+            className="h-125 w-full object-cover transition duration-500 hover:scale-105"
           />
         </div>
 
@@ -119,7 +119,7 @@ const ProductDetail = () => {
 
           <button
             onClick={handleAddToCart}
-            className="rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 px-8 py-4 text-lg font-semibold text-white shadow-lg shadow-orange-500/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-orange-500/50"
+            className="rounded-xl bg-linear-to-r from-orange-500 to-orange-600 px-8 py-4 text-lg font-semibold text-white shadow-lg shadow-orange-500/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-orange-500/50"
           >
             Add to Cart
           </button>
@@ -141,4 +141,4 @@ const ProductDetail = () => {
   );
 };
 
-export default ProductDetail;
+export default ProductDetail; 

@@ -12,7 +12,7 @@ const ProductCard = ({ product }) => {
         />
       </div>
 
-      <div className="relative z-10 flex flex-1 flex-col justify-between bg-gradient-to-t from-zinc-900 via-zinc-900 to-transparent p-5">
+      <div className="relative z-10 flex flex-1 flex-col justify-between bg-linear-to-t from-zinc-900 via-zinc-900 to-transparent p-5">
         <div>
           <h3 className="mb-2 truncate text-lg font-semibold text-white">
             {product.name}
