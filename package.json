@@ -1,0 +1,29 @@
+{
+  "name": "shopnest-full-stack",
+  "version": "1.0.0",
+  "description": "",
+  "keywords": [
+    "ritik",
+    "microservice"
+  ],
+  "homepage": "https://github.com/ritikrishuRP/ShopNest#readme",
+  "bugs": {
+    "url": "https://github.com/ritikrishuRP/ShopNest/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ritikrishuRP/ShopNest.git"
+  },
+  "license": "ISC",
+  "author": "ritik",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev"
+  },
+  "dependencies": {
+    "concurrently": "^10.0.4"
+  }
+}
