@@ -16,6 +16,7 @@ const Navbar = () => {
   return (
     <nav className="sticky top-0 z-50 border-b border-white/5 bg-zinc-950/80 px-5 py-4 shadow-2xl backdrop-blur-xl md:px-12">
       <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 md:flex-row">
+
         {/* Logo */}
         <div>
           <Link
@@ -37,6 +38,8 @@ const Navbar = () => {
 
         {/* Navigation */}
         <ul className="flex flex-wrap items-center gap-7">
+
+          {/* Shop - visible to everyone */}
           <li>
             <Link
               to="/shop"
@@ -46,17 +49,19 @@ const Navbar = () => {
             </Link>
           </li>
 
-          <li>
-            <Link
-              to="/cart"
-              className="relative text-sm font-medium text-zinc-400 transition-colors duration-300 hover:text-white after:absolute after:-bottom-1.5 after:left-0 after:h-0.5 after:w-0 after:rounded after:bg-orange-500 after:transition-all after:duration-300 hover:after:w-full"
-            >
-              Cart ({cartItems.length})
-            </Link>
-          </li>
-
           {user ? (
             <>
+              {/* Cart - only logged-in users */}
+              <li>
+                <Link
+                  to="/cart"
+                  className="relative text-sm font-medium text-zinc-400 transition-colors duration-300 hover:text-white after:absolute after:-bottom-1.5 after:left-0 after:h-0.5 after:w-0 after:rounded after:bg-orange-500 after:transition-all after:duration-300 hover:after:w-full"
+                >
+                  Cart ({cartItems.length})
+                </Link>
+              </li>
+
+              {/* Profile */}
               <li>
                 <Link
                   to="/profile"
@@ -66,6 +71,7 @@ const Navbar = () => {
                 </Link>
               </li>
 
+              {/* Admin */}
               {user.role === "admin" && (
                 <li>
                   <Link
@@ -77,6 +83,7 @@ const Navbar = () => {
                 </li>
               )}
 
+              {/* Logout */}
               <li>
                 <button
                   onClick={handleLogout}
@@ -87,6 +94,7 @@ const Navbar = () => {
               </li>
             </>
           ) : (
+            /* Login */
             <li>
               <Link
                 to="/login"
