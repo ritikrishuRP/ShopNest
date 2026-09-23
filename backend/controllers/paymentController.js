@@ -7,36 +7,86 @@ export const createOrder = async (req, res) => {
       key_id: process.env.RAZORPAY_KEY_ID,
       key_secret: process.env.RAZORPAY_KEY_SECRET,
     });
-    
-    // Razorpay accepts amount in paise
+
+    const amount = Number(req.body.amount);
+
+    if (!amount || amount <= 0) {
+      return res.status(400).json({
+        message: "Invalid payment amount",
+      });
+    }
+
+    // Razorpay expects amount in paise
     const options = {
-      amount: req.body.amount * 100,
+      amount: Math.round(amount * 100),
       currency: "INR",
+      receipt: `receipt_${Date.now()}`,
     };
-    
+
     const order = await instance.orders.create(options);
-    if (!order) return res.status(500).send("Some error occured");
-    res.json(order);
+
+    res.status(200).json({
+      ...order,
+
+      // Public key ID can safely be sent to frontend
+      key_id: process.env.RAZORPAY_KEY_ID,
+    });
+
   } catch (error) {
-    res.status(500).send(error);
+    console.error("Razorpay Create Order Error:", error);
+
+    res.status(500).json({
+      message: error.message || "Failed to create Razorpay order",
+    });
   }
 };
 
 export const verifyPayment = async (req, res) => {
   try {
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
-    const sign = razorpay_order_id + "|" + razorpay_payment_id;
-    const expectedSign = crypto.createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
-      .update(sign.toString())
+    const {
+      razorpay_order_id,
+      razorpay_payment_id,
+      razorpay_signature,
+    } = req.body;
+
+    if (
+      !razorpay_order_id ||
+      !razorpay_payment_id ||
+      !razorpay_signature
+    ) {
+      return res.status(400).json({
+        message: "Incomplete payment information",
+      });
+    }
+
+    const sign =
+      razorpay_order_id +
+      "|" +
+      razorpay_payment_id;
+
+    const expectedSign = crypto
+      .createHmac(
+        "sha256",
+        process.env.RAZORPAY_KEY_SECRET
+      )
+      .update(sign)
       .digest("hex");
 
     if (razorpay_signature === expectedSign) {
-      return res.status(200).json({ message: "Payment verified successfully" });
-    } else {
-      return res.status(400).json({ message: "Invalid signature sent!" });
+      return res.status(200).json({
+        message: "Payment verified successfully",
+      });
     }
+
+    return res.status(400).json({
+      message: "Invalid payment signature",
+    });
+
   } catch (error) {
-    res.status(500).send(error);
+    console.error("Razorpay Verification Error:", error);
+
+    res.status(500).json({
+      message: "Payment verification failed",
+    });
   }
 };
-

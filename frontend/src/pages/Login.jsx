@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 
 const Login = () => {
@@ -7,7 +7,9 @@ const Login = () => {
   const [password, setPassword] = useState("");
 
   const { login } = useContext(AuthContext);
+
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,12 +30,17 @@ const Login = () => {
 
       if (res.ok) {
         login(data);
-        navigate("/");
+
+        // Where the user originally wanted to go
+        const redirectTo = location.state?.from || "/";
+
+        navigate(redirectTo, { replace: true });
       } else {
         alert(data.message);
       }
     } catch (error) {
-      console.error(error);
+      console.error("Login error:", error);
+      alert("Something went wrong. Please try again.");
     }
   };
 

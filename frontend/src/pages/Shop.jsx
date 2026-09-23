@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import ProductCard from "../components/ProductCard";
 
 const Shop = () => {
@@ -6,14 +7,23 @@ const Shop = () => {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
 
+  const [searchParams] = useSearchParams();
+  const category = searchParams.get("category");
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const res = await fetch("/api/products");
         const data = await res.json();
-        setProducts(data);
+
+        if (res.ok) {
+          setProducts(data);
+        } else {
+          setProducts([]);
+        }
       } catch (error) {
-        console.error(error);
+        console.error("Error fetching products:", error);
+        setProducts([]);
       } finally {
         setLoading(false);
       }
@@ -22,15 +32,33 @@ const Shop = () => {
     fetchProducts();
   }, []);
 
-  const filteredProducts = products.filter((product) =>
-    product.name.toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredProducts = products.filter((product) => {
+    const matchesSearch = product.name
+      .toLowerCase()
+      .includes(search.toLowerCase());
+
+    const matchesCategory =
+      !category ||
+      product.category.toLowerCase() === category.toLowerCase();
+
+    return matchesSearch && matchesCategory;
+  });
 
   return (
     <div className="mx-auto max-w-7xl px-5 py-10">
-      <h1 className="mb-8 text-center text-4xl font-bold text-white">
-        All Products
+
+      {/* Heading */}
+      <h1 className="mb-2 text-center text-4xl font-bold text-white">
+        {category ? `${category} Products` : "All Products"}
       </h1>
+
+      {category && (
+        <p className="mb-8 text-center text-zinc-400">
+          Showing products from the {category} category
+        </p>
+      )}
+
+      {!category && <div className="mb-8" />}
 
       {/* Search */}
       <div className="mb-10 flex justify-center">
@@ -56,7 +84,9 @@ const Shop = () => {
           </h2>
 
           <p className="text-zinc-400">
-            Try searching with another keyword.
+            {category
+              ? `No products found in ${category}.`
+              : "Try searching with another keyword."}
           </p>
         </div>
       ) : (
