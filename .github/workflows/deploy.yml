@@ -1,0 +1,46 @@
+name: Deploy ShopNest
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ec2-user
+          key: ${{ secrets.EC2_SSH_KEY }}
+
+          script: |
+            set -e
+
+            echo "Starting ShopNest deployment..."
+
+            cd /home/ec2-user/ShopNest
+
+            echo "Updating code..."
+            git fetch origin main
+            git reset --hard origin/main
+
+            echo "Installing backend dependencies..."
+            cd backend
+            npm ci
+
+            echo "Installing frontend dependencies..."
+            cd ../frontend
+            npm ci
+
+            echo "Building frontend..."
+            npm run build
+
+            echo "Restarting backend..."
+            cd ..
+            pm2 restart shopnest
+
+            echo "Deployment completed successfully."
